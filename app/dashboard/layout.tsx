@@ -1,0 +1,21 @@
+import AppHeader from '@/components/custom/dashboard/AppHeader'
+import { AppSidebar } from '@/components/custom/dashboard/AppSideBar'
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
+import React from 'react'
+
+function DashboardLayout({ children }: { children: React.ReactNode }) {
+    return (
+        <SidebarProvider>
+            {/* Dashboard routes share the same sidebar/header shell for consistent navigation. */}
+            <AppSidebar />
+            <div className="flex flex-1 flex-col">
+                <AppHeader />
+                <div className="p-5">
+                    {children}
+                </div>
+            </div>
+        </SidebarProvider>
+    )
+}
+
+export default DashboardLayout

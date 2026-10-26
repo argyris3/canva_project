@@ -1,0 +1,21 @@
+import AppHeader from '@/components/custom/dashboard/AppHeader'
+import { AppSidebar } from '@/components/custom/dashboard/AppSideBar'
+import { SidebarProvider } from '@/components/ui/sidebar'
+import React from 'react'
+
+function SettingsLayout({ children }: { children: React.ReactNode }) {
+    return (
+        <SidebarProvider>
+            {/* Settings uses the dashboard shell so account controls stay one click away. */}
+            <AppSidebar />
+            <div className="flex flex-1 flex-col">
+                <AppHeader />
+                <div className="p-5">
+                    {children}
+                </div>
+            </div>
+        </SidebarProvider>
+    )
+}
+
+export default SettingsLayout
