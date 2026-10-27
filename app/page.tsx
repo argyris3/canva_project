@@ -75,11 +75,11 @@ export default function Home() {
         <header className="relative z-10 mx-auto flex w-full max-w-7xl items-center justify-between px-5 py-5 sm:px-6 lg:px-8">
           <Link
             href="/"
-            className="flex items-center gap-3"
+            className="flex items-center gap-2 sm:gap-3"
             aria-label="canva home"
           >
             <Image src="/logo.svg" alt="" width={36} height={36} priority />
-            <span className="text-lg font-semibold tracking-normal text-slate-950">
+            <span className="text-base font-semibold tracking-normal text-slate-950 sm:text-lg">
               Canva_Board
             </span>
           </Link>
@@ -96,18 +96,19 @@ export default function Home() {
             </a>
           </nav>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             <Link
               href="/sign-in"
-              className="hidden h-10 items-center rounded-md px-4 text-sm font-semibold text-slate-700 transition hover:bg-white hover:text-slate-950 sm:inline-flex"
+              className="inline-flex h-10 items-center rounded-md px-2 text-sm font-semibold text-slate-700 transition hover:bg-white hover:text-slate-950 sm:px-4"
             >
               Sign in
             </Link>
             <Link
               href="/dashboard"
-              className="inline-flex h-10 items-center gap-2 rounded-md bg-slate-950 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
+              aria-label="Open dashboard"
+              className="inline-flex h-10 items-center gap-2 rounded-md bg-slate-950 px-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800 sm:px-4"
             >
-              Open dashboard
+              <span className="hidden sm:inline">Open dashboard</span>
               <ArrowRight className="size-4" />
             </Link>
           </div>
