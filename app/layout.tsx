@@ -5,6 +5,7 @@ import Provider from "./provider";
 import { Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toast";
+import { url } from "inspector";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -12,6 +13,13 @@ export const metadata: Metadata = {
   title: "Canva_Project",
   description:
     "Plan, diagram, and organize ideas on an AI-powered visual workspace.",
+  icons: {
+    icon: [
+      {
+        url: "/logo.svg",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({

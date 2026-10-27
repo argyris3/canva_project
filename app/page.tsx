@@ -76,11 +76,11 @@ export default function Home() {
           <Link
             href="/"
             className="flex items-center gap-3"
-            aria-label="Whizboard home"
+            aria-label="canva home"
           >
             <Image src="/logo.svg" alt="" width={36} height={36} priority />
             <span className="text-lg font-semibold tracking-normal text-slate-950">
-              Canva_Project
+              Canva_Board
             </span>
           </Link>
 
@@ -125,9 +125,9 @@ export default function Home() {
             </h1>
 
             <p className="mt-6 max-w-xl text-lg leading-8 text-slate-600">
-              Whizboard helps teams turn rough thinking into structured
-              diagrams, visual notes, and project boards with an AI collaborator
-              built into the workspace.
+              Canvas helps teams turn rough thinking into structured diagrams,
+              visual notes, and project boards with an AI collaborator built
+              into the workspace.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
