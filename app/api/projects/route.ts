@@ -1,4 +1,4 @@
-import { db, projects, users, WhiteboardData } from "@/db";
+import { db, projects, WhiteboardData } from "@/db";
 import { currentUser } from "@clerk/nextjs/server";
 import { and, desc, eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
@@ -8,16 +8,10 @@ export async function POST(req: NextRequest) {
     const user = await currentUser();
 
     if (!user?.primaryEmailAddress?.emailAddress) {
-        return NextResponse.json({ error: 'Unauthorized User' })
+        return NextResponse.json({ error: 'Unauthorized User' }, { status: 401 })
     }
     if (!projectId || !projectName) {
-        return NextResponse.json({ error: 'Project Information missing' })
-    }
-
-    // Creating a board spends one starter credit, so verify the balance before inserting the project.
-    const userCredits = await db.select().from(users).where(eq(users.email, user?.primaryEmailAddress?.emailAddress));
-    if (Number(userCredits[0]?.credits ?? 0) <= 0) {
-        return NextResponse.json({ error: 'Insufficient Credits' })
+        return NextResponse.json({ error: 'Project Information missing' }, { status: 400 })
     }
 
     const result = await db.insert(projects).values({
@@ -25,12 +19,6 @@ export async function POST(req: NextRequest) {
         projectName: projectName ?? '',
         userEmail: user?.primaryEmailAddress?.emailAddress ?? ''
     }).returning();
-
-
-    const updateUserCredits = await db.update(users).set({
-        credits: Number(userCredits[0].credits) - 1
-    }).where(eq(users.email, user?.primaryEmailAddress?.emailAddress));
-
 
     return NextResponse.json(result[0]);
 

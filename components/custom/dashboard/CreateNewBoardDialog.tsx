@@ -35,29 +35,32 @@ function CreateNewBoardDialog() {
         setLoading(true);
         // The client creates the public project id so it can route immediately after a successful insert.
         const projectId = crypto.randomUUID();
-        const result = await axios.post('/api/projects', {
-            projectName: workspaceName,
-            projectId: projectId
-        });
+        try {
+            await axios.post('/api/projects', {
+                projectName: workspaceName,
+                projectId: projectId
+            });
 
-        if (result.data?.error) {
-            // The API currently returns an error field for expected creation failures such as credits.
+            toast.add({
+                type: 'success',
+                title: 'New Workspace Created'
+            });
+            setDialog(false);
+            route.push('/workspace/' + projectId)
+        } catch (error) {
+            const description = axios.isAxiosError(error) &&
+                typeof error.response?.data?.error === 'string'
+                ? error.response.data.error
+                : 'Please try again.';
+
             toast.add({
                 type: 'error',
-                title: 'Insufficient Credits!'
+                title: "Couldn't Create Board",
+                description
             });
+        } finally {
             setLoading(false);
-            setDialog(false);
-            return;
         }
-        console.log(result?.data);
-        toast.add({
-            type: 'success',
-            title: 'New Workspace Created'
-        });
-        setLoading(false);
-        setDialog(false);
-        route.push('/workspace/' + projectId)
     }
 
     return (
