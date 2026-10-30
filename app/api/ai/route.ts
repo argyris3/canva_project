@@ -1,16 +1,20 @@
-import { NextRequest } from "next/server"
-import { GoogleGenAI, ThinkingLevel } from "@google/genai"
+import { NextRequest } from 'next/server';
+// import { GoogleGenAI, ThinkingLevel } from "@google/genai"
+import OpenAI from 'openai';
 
 export async function POST(req: NextRequest) {
-    try {
-        const { userInput, type, systemPrompt } = await req.json()
+  try {
+    const { userInput, type, systemPrompt } = await req.json();
 
-        const ai = new GoogleGenAI({
-            apiKey: process.env.GEMINI_API_KEY,
-        })
+    // const ai = new GoogleGenAI({
+    //     apiKey: process.env.GEMINI_API_KEY,
+    // })
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
 
-        // Keep the model contract strict because the client converts this JSON directly into Excalidraw elements.
-        const finalPrompt = `
+    // Keep the model contract strict because the client converts this JSON directly into Excalidraw elements.
+    const finalPrompt = `
 ${systemPrompt}
 
 USER REQUEST:
@@ -173,51 +177,73 @@ Return JSON using this structure:
         }
     ]
 }
-`
+`;
 
-        const response = await ai.models.generateContent({
-            model: "gemini-3.7-flash",
-            contents: finalPrompt,
-            config: {
-                thinkingConfig: {
-                    thinkingLevel: ThinkingLevel.MEDIUM,
-                },
-                maxOutputTokens: 65536,
-                responseMimeType: "application/json",
-            },
-        })
+    // const response = await ai.models.generateContent({
+    //   model: 'gemini-3.7-flash',
+    //   contents: finalPrompt,
+    //   config: {
+    //     thinkingConfig: {
+    //       thinkingLevel: ThinkingLevel.MEDIUM,
+    //     },
+    //     maxOutputTokens: 65536,
+    //     responseMimeType: 'application/json',
+    //   },
+    // });
 
-        const text = response.text
+    const response = await openai.responses.create({
+      model: 'gpt-6-luna',
 
-        if (!text) {
-            return Response.json(
-                {
-                    success: false,
-                    error: "AI returned empty response",
-                },
-                {
-                    status: 500,
-                }
-            )
-        }
+      service_tier: 'default',
+      input: finalPrompt,
+      text: {
+        format: {
+          type: 'text',
+        },
+        verbosity: 'medium',
+      },
+      reasoning: {
+        effort: 'medium',
+        mode: 'standard',
+        summary: 'auto',
+      },
+      tools: [],
+      stream: false,
+      store: true,
+      include: ['reasoning.encrypted_content', 'web_search_call.action.sources'],
+    });
 
-        const diagramResult = JSON.parse(text)
+    const text = response.output_text;
 
-        return Response.json({
-            success: true,
-            diagramResult,
-        })
-    } catch (error) {
-        console.error("AI Diagram Generation Error:", error)
-
-        return Response.json(
-            {
-                success: false,
-                error: error instanceof Error ? error.message : "Failed to generate diagram",
-            },
-            {
-                status: 500,
-            }
-        )
+    if (!text) {
+      return Response.json(
+        {
+          success: false,
+          error: 'AI returned empty response',
+        },
+        {
+          status: 500,
+        },
+      );
     }
+
+    const diagramResult = JSON.parse(text);
+
+    return Response.json({
+      success: true,
+      diagramResult,
+    });
+  } catch (error) {
+    console.error('AI Diagram Generation Error:', error);
+
+    return Response.json(
+      {
+        success: false,
+        error: error instanceof Error ? error.message : 'Failed to generate diagram',
+      },
+      {
+        status: 500,
+      },
+    );
+  }
 }
